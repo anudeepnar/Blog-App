@@ -1,0 +1,66 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<header class="container mb-4">
+                       <!-- Post title-->
+    <h1 class="fw-bolder mb-1 ">{{ blog_detail.title }}</h1>
+                            <!-- Post meta content-->
+    <div class="text-muted fst-italic mb-2">Posted on {{ blog_detail.created_at }} by {{ blog_detail.author }}</div> 
+
+    <a class="btn btn-outline-info" href="{% url 'blog:blog_update_view' slug=blog_detail.slug%}">Update Post</a>
+
+        <a class="btn btn-outline-danger" href="{% url 'blog:blog_delete_view' slug=blog_detail.slug%}">Delete Post</a>
+ 
+</header>
+{% if blog_detail.image %}
+<img width="900" height="400" src="{{ blog_detail.image.url }}" class="rounded mx-auto d-block" alt="">
+{% endif %}
+</div>
+     <!-- Post content-->
+<section class="my-3 container">
+    <p class="fs-5 mb-4">{{ blog_detail.description }}</p>
+
+</section>
+
+
+<!-- Comments section-->
+
+
+            
+   <h4>Post your comment or question below:</h4>
+   {% if not blog_detail.blogs.all %}
+    <h3>No comments...</h3><a href="">Add one</a>
+    {% else %}
+{% for comment in blog_detail.blogs.all %}
+      <form  method="post">
+         <div class="form-group">
+         {% csrf_token %}
+         {{ form.as_p }}
+         {% comment %} {{ form|crispy }} {% endcomment %}
+         <input type="submit" name="form" value="Add Comment" class="btn btn-primary btn-sm">
+         </div>
+      </form>
+
+      {% for comment in blog_detail.blogs.all %}
+         <h4>{{ comment.author }}<small><i>Posted on {{ comment.date_added }}</i></small></h4>
+         <p>{{ comment.body }}</p>
+            {% for reply in comment.replies.all %} 
+{% comment %} django can automatically assigned comment(related_name) to model Comment {% endcomment %}
+               <h5>{{ reply.author }} <small><i>Posted on {{ reply.date_added }}</i></small></h5>
+         <p>{{ reply.reply_body }}</p>
+         {% endfor %}
+
+      <form method="post">
+         <input type="hidden" name="comment.id" value="{{ comment.id }}">
+         <input type="hidden" name="comment.comm_name" value="{{ comment.comm_name }}">
+         {% csrf_token %}
+         {{  form2.as_p }}
+         {% comment %} {{ form2|crispy }} {% endcomment %}
+         <input type="submit" name="form2" value="Add Reply" class="btn btn-warning btn-sm">
+      </form>
+
+      {% endfor %}
+{% endfor %}
+{% endif %}
+
+{% endblock content %}

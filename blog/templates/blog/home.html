@@ -1,0 +1,89 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% include 'includes/banner.html' %}
+
+<!-- lead -->
+
+        <section id="scroll">
+            <div class="container px-5">
+              {% for lead in leads %}
+                <div class="row gx-5 align-items-center">
+                    <div class="col-lg-6 order-lg-2">
+                      {% if lead.image %}
+                        <div class="p-5"><img width="700" height="700" class="img-fluid rounded-circle" src="{{ lead.image.url }}" alt="..." /></div>
+                        {% endif %}
+                    </div>
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="p-5">
+                            <a href="{% url 'blog:lead_update_view' slug=lead.slug %}" class=" display-4">{{ lead.title }}</a>
+                            <p>{{ lead.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if user.is_superuser %}
+                <a class="btn btn-grad-admin" href="{% url 'blog:lead_create_view' %}" > Create Lead </a> 
+                {% endif %}
+            </div>
+            
+        </section>
+        
+
+
+
+<!-- blogs -->
+
+<div class="container my-3 ">
+
+<div class="row mb-2 ">
+{% for blog in latest_blogs %}
+    <div class="col-lg-6 ">
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4  h-md-250 position-relative box-post ">
+        <div class="col p-4 d-flex flex-column position-static  ">
+          {% comment %} <strong class="d-inline-block mb-2 text-primary">World</strong> {% endcomment %}
+          <h3 class="mb-0">{{ blog.title|truncatechars:20 }}</h3>
+          <div class="mb-1 text-muted">{{ blog.created_at }}</div>
+          <p class="card-text mb-auto">{{ blog.description|truncatechars:90 }}</p>
+          <strong class="d-inline-block mb-2 text-success">{{ blog.author }}</strong>
+          {% if user.is_authenticated %}
+          <a href="{% url 'blog:blog_detail_view' slug=blog.slug %}" class="continue-reading ">Continue reading</a>
+          {% endif %}
+        </div>
+        <div class="col-auto d-none d-lg-block">
+        {% if blog.image %}
+        <img class="bd-placeholder-img" width="200" height="250" src="{{ blog.image.url }}">
+        {% endif %}
+        </div>
+      </div>
+    </div>
+    {% comment %} <div class="col-md-6">
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-success">Design</strong>
+          <h3 class="mb-0">Post title</h3>
+          <div class="mb-1 text-muted">Nov 11</div>
+          <p class="mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+          <a href="#" class="stretched-link">Continue reading</a>
+        </div>
+        <div class="col-auto d-none d-lg-block">
+          <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+        </div>
+      </div>
+    </div> {% endcomment %}
+    {% endfor %}
+  </div>
+
+</div>
+
+
+<!-- testimonials -->
+{% include 'includes/testimonial.html' %}
+
+
+
+{% endblock content %}
+
+{% comment %} width="200" height="250" {% endcomment %}
