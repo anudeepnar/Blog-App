@@ -8,9 +8,6 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-#user anudeepnar
-#pass chintu@00
-
 def register(request):
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
